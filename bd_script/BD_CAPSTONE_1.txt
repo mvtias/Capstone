@@ -1,0 +1,108 @@
+-- Creación de tablas
+CREATE TABLE rol (
+    id_rol INT NOT NULL,
+    descripcion_rol VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_rol)
+);
+
+CREATE TABLE persona (
+    rut VARCHAR(8) NOT NULL,
+    dv VARCHAR(1) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    PRIMARY KEY (rut)
+);
+
+CREATE TABLE receta (
+    id_receta INT NOT NULL AUTO_INCREMENT,
+    descripcion VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id_receta)
+);
+
+CREATE TABLE medicamento (
+    id_medica INT NOT NULL AUTO_INCREMENT,
+    nombre_medicamento VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(50) NOT NULL,
+    precio INT NOT NULL,
+    stock INT NOT NULL,
+    PRIMARY KEY (id_medica)
+);
+
+CREATE TABLE hora (
+    id_hora INT NOT NULL AUTO_INCREMENT,
+    anio INT NOT NULL,
+    mes INT NOT NULL,
+    dia INT NOT NULL,
+    hora INT NOT NULL,
+    rut_especialista VARCHAR(8) NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_hora)
+);
+
+CREATE TABLE evento (
+    id_evento INT NOT NULL AUTO_INCREMENT,
+    nombre_evento VARCHAR(50) NOT NULL,
+    descripcion_evento VARCHAR(50) NOT NULL,
+    direccion VARCHAR(50) NOT NULL,
+    fecha DATE NOT NULL,
+    hora INT NOT NULL,
+    cupos_total INT NOT NULL,
+    cupos_disponible INT NOT NULL,
+    PRIMARY KEY (id_evento)
+);
+
+CREATE TABLE rec_medic (
+    id_receta INT NOT NULL,
+    id_medica INT NOT NULL,
+    FOREIGN KEY (id_receta) REFERENCES receta (id_receta),
+    FOREIGN KEY (id_medica) REFERENCES medicamento (id_medica)
+);
+
+CREATE TABLE hora_receta (
+    id_hora INT NOT NULL,
+    id_receta INT NOT NULL,
+    FOREIGN KEY (id_hora) REFERENCES hora (id_hora),
+    FOREIGN KEY (id_receta) REFERENCES receta (id_receta)
+);
+
+CREATE TABLE area (
+    id_area INT NOT NULL,
+    nombre_area VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_area)
+);
+
+CREATE TABLE boleta (
+    id_boleta INT NOT NULL,
+    id_receta INT NOT NULL,
+    PRIMARY KEY (id_boleta),
+    FOREIGN KEY (id_receta) REFERENCES receta (id_receta)
+);
+
+CREATE TABLE cuenta (
+    id_cuenta INT NOT NULL AUTO_INCREMENT,
+    usuario VARCHAR(50) NOT NULL,
+    contrasenia VARCHAR(50) NOT NULL,
+    token VARCHAR(50),
+    telefono VARCHAR(15),
+    rut VARCHAR(8) NOT NULL,
+    id_rol INT NOT NULL,
+    id_area INT NOT NULL,
+    PRIMARY KEY (id_cuenta),
+    FOREIGN KEY (id_area) REFERENCES area (id_area),
+    FOREIGN KEY (rut) REFERENCES persona (rut),
+    FOREIGN KEY (id_rol) REFERENCES rol (id_rol)
+);
+
+CREATE TABLE cuenta_evento (
+    id_cuenta INT NOT NULL,
+    id_evento INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES cuenta (id_cuenta),
+    FOREIGN KEY (id_evento) REFERENCES evento (id_evento)
+);
+
+CREATE TABLE cuenta_hora (
+    id_hora INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_hora) REFERENCES hora (id_hora),
+    FOREIGN KEY (id_cuenta) REFERENCES cuenta (id_cuenta)
+);

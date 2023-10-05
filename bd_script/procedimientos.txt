@@ -1,0 +1,46 @@
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertarCuentaPersona`(
+    IN p_usuario VARCHAR(50),
+    IN p_contrasenia VARCHAR(50),
+    IN p_telefono VARCHAR(15),
+    IN p_rut VARCHAR(8),
+    IN p_nombre VARCHAR(50),
+    IN p_apellido VARCHAR(50)
+)
+BEGIN
+
+    SET @dv = RIGHT(p_rut, 1);
+
+    
+    INSERT INTO persona (rut, dv, nombre, apellido) VALUES (p_rut, @dv, p_nombre, p_apellido);
+
+    
+    INSERT INTO cuenta (usuario, contrasenia, telefono, rut, id_rol, id_area) VALUES (p_usuario, p_contrasenia, p_telefono, p_rut, 4, 4);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ValidarLogin`(
+    IN `p_usuario` VARCHAR(50), 
+    IN `p_contrasenia` VARCHAR(50)
+)
+BEGIN
+    DECLARE v_contrasenia_db VARCHAR(50);
+
+   
+    SELECT contrasenia INTO v_contrasenia_db FROM cuenta WHERE usuario = p_usuario LIMIT 1;
+
+   
+    IF v_contrasenia_db IS NOT NULL THEN
+        -- Verificar si la contraseña coincide
+        IF v_contrasenia_db = p_contrasenia THEN
+            SELECT 1 AS respuesta; 
+        ELSE
+            SELECT 0 AS respuesta; 
+        END IF;
+    ELSE
+        SELECT -1 AS respuesta;
+    END IF;
+END$$
+DELIMITER ;
